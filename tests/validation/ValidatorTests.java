@@ -24,7 +24,7 @@ public class ValidatorTests {
     @DataPoints("passwords")
     public static String[] passwords() {
         return new String[]{
-                "testAs145", "testUOoju124", "-123456AA7", "sgGSDGsggvxbvcx", "10BfdssfdsfB", "TESTASTTESTAS"};
+                "testA!s145", "testU+Ooju124", "-12345$$6AA7", "sgGSDGsg~~gvxbvcx", "10Bf~dssfdsfB", "TES!TASTTESTAS"};
     }
 
     @DataPoints("special symbols")
