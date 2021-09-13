@@ -135,7 +135,7 @@ public class ValidatorTests {
     }
 
     private void findError(int[] status, int errorCode) {
-        Assert.assertFalse(Arrays.toString(status).contains(String.valueOf(errorCode)));
+        Assert.assertFalse(Arrays.asList(status).contains(errorCode));
     }
 
 
