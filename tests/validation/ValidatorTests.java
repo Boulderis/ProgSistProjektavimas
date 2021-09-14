@@ -24,7 +24,7 @@ public class ValidatorTests {
     @DataPoints("passwords")
     public static String[] passwords() {
         return new String[]{
-                "testA!s145", "testU+Ooju124", "-12345$$6AA7", "sgGSDGsg~~gvxbvcx", "10Bf~dssfdsfB", "TES!TASTTESTAS"};
+                "test145", "testUOoju124", "-12345+$$67", "sgsggvxbvcx", "10f~dssfdsf", "TESTASTTESTAS"};
     }
 
     @DataPoints("special symbols")
@@ -34,16 +34,28 @@ public class ValidatorTests {
     }
 
     @DataPoints("phone numbers")
-    public static String[] phoneNumbers() {
+    public static String[] phoneNumbers() { // this is for checking if phone number has nonsense symbols in it.
         return new String[]{
-                "+37064488423", "865542322", "868888888"};
+                "+370ABC64488423", "86554 2322", "868~888888"};
+    }
+
+    @DataPoints("Lithuania phone numbers")
+    public static String[] LithuaniaPhoneNumbers() { // this is for 86 to +370 conversion test.
+        return new String[]{
+                "864578956", "864422111", "868888888"};
+    }
+
+    @DataPoints("Estonia phone numbers")
+    public static String[] EstoniaPhoneNumbers() { // this is for the phone validators third task. These are correct.
+        return new String[]{
+                "+3724455666", "+3728756421", "+3725864752"};
     }
 
     @DataPoints("emails")
     public static String[] emails() {
         return new String[]{
-                "pranas.pranauskas@gmail.com", "stasys.stasiulis@gmail.com",
-                "jonas.jonaitis@gmail.com", "petras.petraitis@gmail.com"};
+                "pranas.pranauskas@gmail.fr", "stasys.stasiulisgmail.pl",
+                "jonas.jonaitisgmail.com", "petras.petr#aitis@gmail.com"};
     }
 
     @DataPoints("restricted email symbols")
@@ -94,16 +106,15 @@ public class ValidatorTests {
     }
 
     @Theory
-    private void TestIfEightIsChangedToLithuaniaNationalNumberCode(@FromDataPoints("phone numbers") String phoneNumbers) {
+    private void TestIfEightIsChangedToLithuaniaNationalNumberCode(@FromDataPoints("Lithuania phone numbers") String phoneNumbers) {
         PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(Country.LITHUANIA);
         String nationalPhoneNumber = validation.applyNationalPhoneNumberCode(phoneNumber, phoneNumberPolicy);
         Assert.assertTrue(nationalPhoneNumber.startsWith("+370"));
     }
 
     @Theory
-    private void TestPhoneNumberNationalNumberCodeApplication(@FromDataPoints("phone numbers") String phoneNumber) {
-        PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(Country.LITHUANIA);
-        String nationalPhoneNumber = validation.applyNationalPhoneNumberCode(phoneNumber, phoneNumberPolicy);
+    private void TestPhoneNumberNationalNumberCodeApplication(@FromDataPoints("Estonia phone numbers") String phoneNumber) {
+        PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(Country.ESTONIA);
         int[] status = validation.checkPhoneNumber(nationalPhoneNumber, phoneNumberPolicy); // Check phone number does not recognize for example: 86 as correct, so method above must be used first.
         findError(status, 2); // 2 if number does not follow country's rules.
     }
@@ -131,11 +142,10 @@ public class ValidatorTests {
         emailPolicy.setValidTopLevelDomains(topLevelDomains);
         int[] status = validation.checkEmail(email, emailPolicy);
         findError(status, 3); // 3 if top level domain is wrong (if not found in the list).
-        findError(status, 4); // 4 if email violates other email rules (for example: A@b@c@example.com).
     }
 
     private void findError(int[] status, int errorCode) {
-        Assert.assertFalse(Arrays.asList(status).contains(errorCode));
+        Assert.assertTrue(Arrays.asList(status).contains(errorCode));
     }
 
 
