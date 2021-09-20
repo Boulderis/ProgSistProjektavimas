@@ -73,7 +73,7 @@ public class ValidatorTests {
 
 
     @Theory
-    private void TestPasswordLengthCheck(@FromDataPoints("passwords") String password) {
+    public void TestPasswordLengthCheck(@FromDataPoints("passwords") String password) {
         int minLength = 8;
         PasswordPolicy passwordPolicy = new PasswordPolicy();
         passwordPolicy.setMinLength(minLength);
@@ -82,7 +82,7 @@ public class ValidatorTests {
     }
 
     @Theory
-    private void TestPasswordUppercaseLetterExistance(@FromDataPoints("passwords") String password) {
+    public void TestPasswordUppercaseLetterExistance(@FromDataPoints("passwords") String password) {
         PasswordPolicy passwordPolicy = new PasswordPolicy();
         passwordPolicy.requireUppercase(true);
         int[] status = validation.checkPassword(password, passwordPolicy);
@@ -90,7 +90,7 @@ public class ValidatorTests {
     }
 
     @Theory
-    private void TestPasswordSpecialSymbolExistance(@FromDataPoints("passwords") String password, @FromDataPoints("special symbols") String specialSymbols) {
+    public void TestPasswordSpecialSymbolExistance(@FromDataPoints("passwords") String password, @FromDataPoints("special symbols") String specialSymbols) {
         PasswordPolicy passwordPolicy = new PasswordPolicy();
         passwordPolicy.requireSpecialSymbols(true);
         passwordPolicy.setSpecialSymbols(specialSymbols);
@@ -99,35 +99,35 @@ public class ValidatorTests {
     }
 
     @Theory
-    private void TestIfNumberIsPlusAndNumbersOnly(@FromDataPoints("phone numbers") String phoneNumber) {
+    public void TestIfNumberIsPlusAndNumbersOnly(@FromDataPoints("phone numbers") String phoneNumber) {
         PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(); // Default setup. Default phone number policy specifies, that only the plus sign and numbers are allowed.
         int[] status = validation.checkPhoneNumber(phoneNumber, phoneNumberPolicy);
         findError(status, 1); // 1 if phone number has other symbols than the plus sign and numbers.
     }
 
     @Theory
-    private void TestIfEightIsChangedToLithuaniaNationalNumberCode(@FromDataPoints("Lithuania phone numbers") String phoneNumbers) {
+    public void TestIfEightIsChangedToLithuaniaNationalNumberCode(@FromDataPoints("Lithuania phone numbers") String phoneNumbers) {
         PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(Country.LITHUANIA);
         String nationalPhoneNumber = validation.applyNationalPhoneNumberCode(phoneNumber, phoneNumberPolicy);
         Assert.assertTrue(nationalPhoneNumber.startsWith("+370"));
     }
 
     @Theory
-    private void TestPhoneNumberNationalNumberCodeApplication(@FromDataPoints("Estonia phone numbers") String phoneNumber) {
+    public void TestPhoneNumberNationalNumberCodeApplication(@FromDataPoints("Estonia phone numbers") String phoneNumber) {
         PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(Country.ESTONIA);
         int[] status = validation.checkPhoneNumber(nationalPhoneNumber, phoneNumberPolicy); // Check phone number does not recognize for example: 86 as correct, so method above must be used first.
         findError(status, 2); // 2 if number does not follow country's rules.
     }
 
     @Theory
-    private void TestIfEmailHasEta(@FromDataPoints("emails") String email) {
+    public void TestIfEmailHasEta(@FromDataPoints("emails") String email) {
         EmailPolicy emailPolicy = new EmailPolicy(); // This is the default setup. Default email policy specifies that eta must exist.
         int[] status = validation.checkEmail(email, emailPolicy);
         findError(status, 1); // 1 if email does not have eta symbol.
     }
 
     @Theory
-    private void TestIfEmailDoesNotHaveRestrictedSymbols(@FromDataPoints("emails") String email, @FromDataPoints("restricted email symbols") String restrictedSymbols) {
+    public void TestIfEmailDoesNotHaveRestrictedSymbols(@FromDataPoints("emails") String email, @FromDataPoints("restricted email symbols") String restrictedSymbols) {
         EmailPolicy emailPolicy = new EmailPolicy();
         emailPolicy.haveRestrictedSymbols(true);
         emailPolicy.setRestrictedSymbols(restrictedSymbols);
@@ -136,7 +136,7 @@ public class ValidatorTests {
     }
 
     @Theory
-    private void TestIfEmailHasCorrectDomain(@FromDataPoints("emails") String email, @FromDataPoints("top level domains") String[] topLevelDomains) {
+    public void TestIfEmailHasCorrectDomain(@FromDataPoints("emails") String email, @FromDataPoints("top level domains") String[] topLevelDomains) {
         EmailPolicy emailPolicy = new EmailPolicy();
         emailPolicy.haveAllowedTopLevelDomains(true);
         emailPolicy.setValidTopLevelDomains(topLevelDomains);
