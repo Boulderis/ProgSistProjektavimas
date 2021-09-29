@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
 @RunWith(Theories.class)
 public class ValidatorTests {
 
-    private Validation validation;
+    /*private Validation validation;
 
     @BeforeEach
     private void setup() {
@@ -201,6 +201,6 @@ public class ValidatorTests {
     @AfterEach
     private void close() {
 
-    }
+    }*/
 
 }
