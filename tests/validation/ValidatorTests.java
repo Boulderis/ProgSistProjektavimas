@@ -8,6 +8,8 @@ import org.junit.experimental.theories.Theory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
+import validators.EmailValidator;
+
 import java.util.stream.IntStream;
 
 // Telefonų testai parašyti taip, kad prieš paduodant numerius į validate, jie turi turėti national prefiksą.
@@ -15,11 +17,18 @@ import java.util.stream.IntStream;
 @RunWith(Theories.class)
 public class ValidatorTests {
 
-    /*private Validation validation;
+    private Validation validation;
 
     @BeforeEach
     private void setup() {
         validation = new Validation();
+    }
+
+
+    @DataPoints("good passwords")
+    public static String[] goodPasswords() {
+        return new String[]{
+                "test1~456452AA", "test!!ABCA", "*AAAAAAbc*^", "keBabas123$", "gyNybA123!!", "testas+TESTAS88"};
     }
 
     @DataPoints("passwords")
@@ -52,6 +61,14 @@ public class ValidatorTests {
                 "+3724455666", "+3728756421", "+3725864752"};
     }
 
+    @DataPoints("good emails")
+    public static String[] goodEmails() {
+        return new String[]{
+                "pranas.pranauskas@gmail.com", "stasys.stasiulis@netikras.lt",
+                "jonasJ~onaitis~@svetaine.org", "petra.i-tis@abc.de"};
+    }
+
+
     @DataPoints("emails")
     public static String[] emails() {
         return new String[]{
@@ -72,6 +89,18 @@ public class ValidatorTests {
         };
     }
 
+
+    @Theory
+    public void TestGoodPasswords(@FromDataPoints("good passwords") String goodPassword, @FromDataPoints("special symbols") String specialSymbols) {
+        int minLenght = 8;
+        PasswordPolicy passwordPolicy = new PasswordPolicy();
+        passwordPolicy.setMinLength(minLenght);
+        passwordPolicy.requireUppercase(true);
+        passwordPolicy.requireSpecialSymbols(true);
+        passwordPolicy.setSpecialSymbols(specialSymbols);
+        int[] status = validation.checkPassword(goodPassword, passwordPolicy);
+        assertNoErrors(status);
+    }
 
     @Theory
     public void TestPasswordLengthCheck(@FromDataPoints("passwords") String password) {
@@ -119,7 +148,20 @@ public class ValidatorTests {
         PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(Country.ESTONIA);
         String nationalPhoneNumber = validation.applyNationalPhoneNumberCode(phoneNumber, phoneNumberPolicy);
         int[] status = validation.checkPhoneNumber(nationalPhoneNumber, phoneNumberPolicy); // Check phone number does not recognize for example: 86 as correct, so method above must be used first.
-        Assert.assertFalse(IntStream.of(status).anyMatch(x -> x == 2)); // 2 if phone number does not follow country rules.
+        assertNoErrors(status);
+    }
+
+    @Theory
+    public void TestGoodEmails(@FromDataPoints("good emails") String goodEmail,
+                               @FromDataPoints("restricted email symbols") String restrictedEmailSymbols,
+                               @FromDataPoints("top level domains") String[] topLevelDomains) {
+        EmailPolicy emailPolicy = new EmailPolicy();
+        emailPolicy.haveRestrictedSymbols(true);
+        emailPolicy.setRestrictedSymbols(restrictedEmailSymbols);
+        emailPolicy.haveAllowedTopLevelDomains(true);
+        emailPolicy.setValidTopLevelDomains(topLevelDomains);
+        int[] status = validation.checkEmail(goodEmail, emailPolicy);
+        assertNoErrors(status);
     }
 
     @Theory
@@ -151,10 +193,14 @@ public class ValidatorTests {
         Assert.assertTrue(IntStream.of(status).anyMatch(x -> x == errorCode));
     }
 
+    private void assertNoErrors(int[] status) {
+        Assert.assertTrue(status.length == 0);
+    }
+
 
     @AfterEach
     private void close() {
 
-    }*/
+    }
 
 }
