@@ -8,8 +8,7 @@ import org.junit.experimental.theories.Theory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
-
-import java.util.Arrays;
+import java.util.stream.IntStream;
 
 @RunWith(Theories.class)
 public class ValidatorTests {
@@ -145,7 +144,7 @@ public class ValidatorTests {
     }
 
     private void findError(int[] status, int errorCode) {
-        Assert.assertTrue(Arrays.asList(status).contains(errorCode));
+        Assert.assertTrue(IntStream.of(status).anyMatch(x -> x == errorCode));
     }
 
 
