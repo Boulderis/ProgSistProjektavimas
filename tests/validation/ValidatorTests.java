@@ -10,6 +10,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
 import java.util.stream.IntStream;
 
+// Telefonų testai parašyti taip, kad prieš paduodant numerius į validate, jie turi turėti national prefiksą.
+
 @RunWith(Theories.class)
 public class ValidatorTests {
 
@@ -23,7 +25,7 @@ public class ValidatorTests {
     @DataPoints("passwords")
     public static String[] passwords() {
         return new String[]{
-                "test145", "testUOoju124", "-12345+$$67", "sgsggvxbvcx", "10f~dssfdsf", "TESTASTTESTAS"};
+                "test145", "test%%", "*aabc*", "=abc=", "def23", "testas"};
     }
 
     @DataPoints("special symbols")
@@ -53,8 +55,8 @@ public class ValidatorTests {
     @DataPoints("emails")
     public static String[] emails() {
         return new String[]{
-                "pranas.pranauskas@gmail.fr", "stasys.stasiulisgmail.pl",
-                "jonas.jonaitisgmail.com", "petras.petr#aitis@gmail.com"};
+                "pranas.pranauskasgmail&.neteisingas", "stasys.stasiu!lisgmail.klaidingas",
+                "jonas.jonaitis$gmail.blablabla", "petras.pet#r#aitisgmail.netinka"};
     }
 
     @DataPoints("restricted email symbols")
@@ -99,8 +101,9 @@ public class ValidatorTests {
 
     @Theory
     public void TestIfNumberIsPlusAndNumbersOnly(@FromDataPoints("phone numbers") String phoneNumber) {
-        PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(); // Default setup. Default phone number policy specifies, that only the plus sign and numbers are allowed.
-        int[] status = validation.checkPhoneNumber(phoneNumber, phoneNumberPolicy);
+        PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(Country.LITHUANIA); // Laikome, kad vartotojas įveda šalį.
+        String nationalPhoneNumber = validation.applyNationalPhoneNumberCode(phoneNumber, phoneNumberPolicy);
+        int[] status = validation.checkPhoneNumber(nationalPhoneNumber, phoneNumberPolicy);
         findError(status, 1); // 1 if phone number has other symbols than the plus sign and numbers.
     }
 
@@ -114,8 +117,9 @@ public class ValidatorTests {
     @Theory
     public void TestPhoneNumberNationalNumberCodeApplication(@FromDataPoints("Estonia phone numbers") String phoneNumber) {
         PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(Country.ESTONIA);
+        String nationalPhoneNumber = validation.applyNationalPhoneNumberCode(phoneNumber, phoneNumberPolicy);
         int[] status = validation.checkPhoneNumber(nationalPhoneNumber, phoneNumberPolicy); // Check phone number does not recognize for example: 86 as correct, so method above must be used first.
-        findError(status, 2); // 2 if number does not follow country's rules.
+        Assert.assertFalse(IntStream.of(status).anyMatch(x -> x == 2)); // 2 if phone number does not follow country rules.
     }
 
     @Theory
