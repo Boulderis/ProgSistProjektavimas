@@ -19,7 +19,8 @@ public class PhoneValidator {
             throw new InvalidPhoneNumberException("Phone number must contain only digits (may contain plus sign)!");
         }
         phoneNumber = changePrefix(phoneNumber);
-        if(phoneNumber.length() < 12) throw new InvalidPhoneNumberException("Phone number is too short.");
+        if(phoneNumber.length() != phoneNumberLength) throw new InvalidPhoneNumberException("Invalid " +
+                "phone number length. The length should be: " + phoneNumberLength);
         return phoneNumber;
     }
 

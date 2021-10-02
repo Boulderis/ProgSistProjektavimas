@@ -8,7 +8,6 @@ import org.junit.experimental.theories.Theory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.runner.RunWith;
-import validators.EmailValidator;
 
 import java.util.stream.IntStream;
 
@@ -17,10 +16,10 @@ import java.util.stream.IntStream;
 @RunWith(Theories.class)
 public class ValidatorTests {
 
-    /*private Validation validation;
+    private Validation validation;
 
     @BeforeEach
-    private void setup() {
+    public void setup() {
         validation = new Validation();
     }
 
@@ -92,9 +91,9 @@ public class ValidatorTests {
 
     @Theory
     public void TestGoodPasswords(@FromDataPoints("good passwords") String goodPassword, @FromDataPoints("special symbols") String specialSymbols) {
-        int minLenght = 8;
+        int minLength = 8;
         PasswordPolicy passwordPolicy = new PasswordPolicy();
-        passwordPolicy.setMinLength(minLenght);
+        passwordPolicy.setMinLength(minLength);
         passwordPolicy.requireUppercase(true);
         passwordPolicy.requireSpecialSymbols(true);
         passwordPolicy.setSpecialSymbols(specialSymbols);
@@ -137,7 +136,7 @@ public class ValidatorTests {
     }
 
     @Theory
-    public void TestIfEightIsChangedToLithuaniaNationalNumberCode(@FromDataPoints("Lithuania phone numbers") String phoneNumbers) {
+    public void TestIfEightIsChangedToLithuaniaNationalNumberCode(@FromDataPoints("Lithuania phone numbers") String phoneNumber) {
         PhoneNumberPolicy phoneNumberPolicy = new PhoneNumberPolicy(Country.LITHUANIA);
         String nationalPhoneNumber = validation.applyNationalPhoneNumberCode(phoneNumber, phoneNumberPolicy);
         Assert.assertTrue(nationalPhoneNumber.startsWith("+370"));
@@ -194,13 +193,13 @@ public class ValidatorTests {
     }
 
     private void assertNoErrors(int[] status) {
-        Assert.assertTrue(status.length == 0);
+        Assert.assertEquals(0, status.length);
     }
 
 
     @AfterEach
-    private void close() {
+    public void close() {
 
-    }*/
+    }
 
 }
