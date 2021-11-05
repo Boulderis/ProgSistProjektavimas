@@ -14,12 +14,12 @@ public class ConsoleManager {
         parseActionNumber(number);
     }
 
-    public String readDatafilePath() {
+    private String readDatafilePath() {
         System.out.println("Prašome įvesti kelią iki ir pavadinimą failo, kuriame yra (arba bus) vartotojų duomenis: ");
         return scanner.nextLine();
     }
 
-    public int readActionNumber() {
+    private int readActionNumber() {
         String message = """
          Prašome įvesti atitinkamą skaičių:
          1 - peržiūrėti esamus vartotojus.
@@ -46,7 +46,7 @@ public class ConsoleManager {
         return number;
     }
 
-    public void parseActionNumber(int number) {
+    private void parseActionNumber(int number) {
         switch(number) {
             case 1:
                 requestManager.printUsers();
