@@ -10,6 +10,19 @@ public class User {
     private String address;
     private String password;
 
+    public User() {
+
+    }
+
+    public User(String name, String surname, String phoneNumber, String email, String address, String password) {
+        this.name = name;
+        this.surname = surname;
+        this.phoneNumber = phoneNumber;
+        this.email = email;
+        this.address = address;
+        this.password = password;
+    }
+
     public long getUserID() {
         return userID;
     }
