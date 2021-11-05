@@ -1,6 +1,7 @@
 package repositories;
 
-import model.User;
+import models.User;
+import validators.UserValidationResult;
 
 import java.util.List;
 
@@ -8,8 +9,8 @@ public interface UserRepository {
 
     List<User> getUsers();
     User getUser(long ID);
-    User createUser(User user);
-    void updateUser(long ID, User user);
+    UserValidationResult createUser(User user);
+    UserValidationResult updateUser(long ID, User user);
     void deleteUser(long ID);
 
 }

@@ -1,6 +1,9 @@
 package repositories;
 
-import model.User;
+import models.User;
+import validators.TeammateUserValidator;
+import validators.UserValidationResult;
+import validators.UserValidator;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +19,8 @@ public class UserFileRepository implements UserRepository {
     private File file;
 
     private char separator = '~';
+
+    private UserValidator userValidator = new TeammateUserValidator();
 
     public UserFileRepository(File file) {
         this.file = file;
@@ -63,47 +68,54 @@ public class UserFileRepository implements UserRepository {
         return null;
     }
 
-    public User createUser(User user) {
+    public UserValidationResult createUser(User user) {
         long ID = getHighestUserID() + 1;
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.write(buildUser(ID, user) + System.getProperty("line.separator"));
-            writer.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-            return null;
+        user.setUserID(ID);
+        UserValidationResult userValidationResult = userValidator.validateUser(user);
+        userValidationResult.printValidationResult();
+        if(userValidationResult.success()) {
+            try {
+                BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+                writer.write(buildUser(ID, user) + System.getProperty("line.separator"));
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return user;
-        // patobulinti.
+        return userValidationResult;
     }
 
-    public void updateUser(long ID, User user) {
-        File tempFile = new File(file.getParent() + "/tempFile.txt");
-        try {
-            Scanner scanner = new Scanner(file);
-            BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
-            while(scanner.hasNextLine()) {
-                String data = scanner.nextLine();
-                String[] split = data.split(String.valueOf(separator));
-                long currentID = Integer.parseInt(split[0]);
-                if(currentID == ID) {
-                    writer.write(buildUser(ID, user) + System.getProperty("line.separator"));
+    public UserValidationResult updateUser(long ID, User user) {
+        UserValidationResult userValidationResult = userValidator.validateUser(user);
+        userValidationResult.printValidationResult();
+        if(userValidationResult.success()) {
+            File tempFile = new File(file.getParent() + "/tempFile.txt");
+            try {
+                Scanner scanner = new Scanner(file);
+                BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
+                while (scanner.hasNextLine()) {
+                    String data = scanner.nextLine();
+                    String[] split = data.split(String.valueOf(separator));
+                    long currentID = Integer.parseInt(split[0]);
+                    if (currentID == ID) {
+                        writer.write(buildUser(ID, user) + System.getProperty("line.separator"));
+                    } else {
+                        writer.write(data + System.getProperty("line.separator"));
+                    }
                 }
-                else {
-                    writer.write(data + System.getProperty("line.separator"));
-                }
+                writer.close();
+                scanner.close();
+                file.delete();
+                tempFile.renameTo(file);
+                file = tempFile;
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (IndexOutOfBoundsException | NumberFormatException e) {
+                System.err.println("Incorrect data format!");
+                e.printStackTrace();
             }
-            writer.close();
-            scanner.close();
-            file.delete();
-            tempFile.renameTo(file);
-            file = tempFile;
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch(IndexOutOfBoundsException | NumberFormatException e) {
-            System.err.println("Incorrect data format!");
-            e.printStackTrace();
         }
+        return userValidationResult;
     }
 
     public void deleteUser(long ID) {
