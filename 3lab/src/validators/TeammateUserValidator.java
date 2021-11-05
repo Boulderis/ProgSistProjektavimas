@@ -27,6 +27,7 @@ public class TeammateUserValidator implements UserValidator{
     public int validatePhoneNumber(String phoneNumber) {
         Phone phoneNumberValidator = new Phone(phoneNumber);
         if(!phoneNumberValidator.CheckIfValid()) return 3;
+        // This actually checks if phone number digits' count is correct.
         if(!phoneNumberValidator.checkForeignPrefix(countryName)) return 2;
         if(!phoneNumberValidator.checkIfOnlyNumbers()) return 1;
         return 0;
@@ -36,6 +37,7 @@ public class TeammateUserValidator implements UserValidator{
     public int validateEmail(String email) {
         Email emailValidator = new Email(email);
         if(!emailValidator.CheckIfValid()) return 4;
+        // This library actually does not checks domain and TLD. It only checks dot placement.
         if(!emailValidator.hasCorrectDomainAndTLD()) return 3;
         if(emailValidator.hasNotAllowedSymbols()) return 2;
         if(!emailValidator.hasAtSymbol()) return 1;

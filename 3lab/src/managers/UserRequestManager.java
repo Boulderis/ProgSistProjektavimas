@@ -25,7 +25,11 @@ public class UserRequestManager {
         if(!file.exists()) {
             System.out.println("Failas neegzistuoja. Sukuriamas naujas failas.");
             try {
-                file.createNewFile();
+                boolean success = file.createNewFile();
+                if(!success) {
+                    System.out.println("Nepavyko sukurti failo!");
+                    System.exit(0);
+                }
             } catch (IOException e) {
                 System.err.println("Nepavyko sukurti failo!");
                 e.printStackTrace();
