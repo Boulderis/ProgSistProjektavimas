@@ -1,6 +1,6 @@
 package managers;
 
-import model.User;
+import models.User;
 import repositories.UserFileRepository;
 import repositories.UserRepository;
 
@@ -54,6 +54,7 @@ public class UserRequestManager {
     public void updateUser() {
         long userID = readUserIDInput();
         User user = createUser();
+        user.setUserID(userID);
         userRepository.updateUser(userID, user);
     }
 
