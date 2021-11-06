@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 public class ConsoleManager {
 
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
     private UserRequestManager requestManager;
 
     public void start() {
@@ -30,7 +30,7 @@ public class ConsoleManager {
          """;
         System.out.println(message);
         String input;
-        Integer number;
+        int number;
         while(true) {
             input = scanner.nextLine();
             try {
@@ -47,26 +47,16 @@ public class ConsoleManager {
     }
 
     private void parseActionNumber(int number) {
-        switch(number) {
-            case 1:
-                requestManager.printUsers();
-                break;
-            case 2:
-                requestManager.printUser();
-                break;
-            case 3:
-                requestManager.addUser();
-                break;
-            case 4:
-                requestManager.updateUser();
-                break;
-            case 5:
-                requestManager.deleteUser();
-                break;
-            default:
-                System.out.println("Kodo vykdymo logika, įvedus šį skaičių, nėra aprašyta!");
+        switch (number) {
+            case 1 -> requestManager.printUsers();
+            case 2 -> requestManager.printUser();
+            case 3 -> requestManager.addUser();
+            case 4 -> requestManager.updateUser();
+            case 5 -> requestManager.deleteUser();
+            default -> {
+                System.err.println("Kodo vykdymo logika, įvedus šį skaičių, nėra aprašyta!");
                 System.exit(0);
-                break;
+            }
         }
     }
 

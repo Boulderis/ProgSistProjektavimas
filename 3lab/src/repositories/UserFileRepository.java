@@ -16,11 +16,11 @@ import java.util.Scanner;
 
 public class UserFileRepository implements UserRepository {
 
-    private File file;
+    private final File file;
 
-    private char separator = '~';
+    private final char separator = '~';
 
-    private UserValidator userValidator = new TeammateUserValidator();
+    private final UserValidator userValidator = new TeammateUserValidator();
 
     public UserFileRepository(File file) {
         this.file = file;
@@ -83,7 +83,7 @@ public class UserFileRepository implements UserRepository {
         if(userValidationResult.success()) {
             try {
                 writer = new BufferedWriter(new FileWriter(file, true));
-                writer.append(buildUser(ID, user) + System.getProperty("line.separator"));
+                writer.append(buildUser(ID, user)).append(System.getProperty("line.separator"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -109,9 +109,9 @@ public class UserFileRepository implements UserRepository {
                     String[] split = data.split(String.valueOf(separator));
                     long currentID = Integer.parseInt(split[0]);
                     if (currentID == ID) {
-                        writer.append(buildUser(ID, user) + System.getProperty("line.separator"));
+                        writer.append(buildUser(ID, user)).append(System.getProperty("line.separator"));
                     } else {
-                        writer.append(data + System.getProperty("line.separator"));
+                        writer.append(data).append(System.getProperty("line.separator"));
                     }
                 }
             } catch (IOException e) {
@@ -139,7 +139,7 @@ public class UserFileRepository implements UserRepository {
                 String[] split = data.split(String.valueOf(separator));
                 long currentID = Integer.parseInt(split[0]);
                 if(currentID == ID) continue;
-                writer.append(data + System.getProperty("line.separator"));
+                writer.append(data).append(System.getProperty("line.separator"));
             }
         } catch (IOException e) {
             e.printStackTrace();
